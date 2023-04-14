@@ -1,28 +1,34 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
+import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { Link, useNavigate } from 'react-router-dom';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Badge } from '@mui/material';
-import { routes } from '../Routers/routes';
+import routes from '../routes/routes';
 
-const BADGE_CONTENT = 0;
+interface ResponsiveAppBarProps {
+  usuarioLogadoEmail: string;
+}
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar({ usuarioLogadoEmail }: ResponsiveAppBarProps) {
   const navigate = useNavigate();
-  const title = 'Template';
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = (url: string) => {
@@ -30,29 +36,33 @@ function ResponsiveAppBar() {
     navigate(url);
   };
 
+  const handleCloseUserMenu = () => {
+    sessionStorage.removeItem('usuarioLogado');
+    localStorage.removeItem('usuarioLogado');
+    navigate('/');
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Badge badgeContent={BADGE_CONTENT} color="secondary">
-            <Typography
-              variant="h6"
-              noWrap
-              component={Link}
-              to="/"
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              {title}
-            </Typography>
-          </Badge>
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            {usuarioLogadoEmail}
+          </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -84,23 +94,18 @@ function ResponsiveAppBar() {
               }}
             >
               {routes.map((page) => (
-                <MenuItem key={page.path} onClick={() => handleCloseNavMenu(page.path)}>
-                  {page.path === '/counter' ? (
-                    <Badge badgeContent={BADGE_CONTENT} color="secondary">
-                      <Typography textAlign="center">{page.label}</Typography>
-                    </Badge>
-                  ) : (
-                    <Typography textAlign="center">{page.label}</Typography>
-                  )}
+                <MenuItem key={page.url} onClick={() => handleCloseNavMenu(page.url)}>
+                  <Typography textAlign="center">{page.label}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
+
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href="/"
+            href=""
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -112,30 +117,46 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            {title}
+            {usuarioLogadoEmail}
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: { md: 'flex-end' } }}>
-            {routes.map((page) => {
-              return page.path === '/counter' ? (
-                <Button
-                  key={page.path}
-                  onClick={() => handleCloseNavMenu(page.path)}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  <Badge badgeContent={BADGE_CONTENT} color="secondary">
-                    {page.label}
-                  </Badge>
-                </Button>
-              ) : (
-                <Button
-                  key={page.path}
-                  onClick={() => handleCloseNavMenu(page.path)}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.label}
-                </Button>
-              );
-            })}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {routes.map((page) => (
+              <Button
+                key={page.url}
+                onClick={() => handleCloseNavMenu(page.url)}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page.label}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt={usuarioLogadoEmail.toUpperCase()} src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Sair</Typography>
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </Container>
