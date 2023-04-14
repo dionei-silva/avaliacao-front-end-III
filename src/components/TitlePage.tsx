@@ -1,4 +1,4 @@
-import { Divider, Grid, Typography } from '@mui/material';
+/* import { Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 
 interface TitlePageProps {
@@ -15,3 +15,4 @@ const TitlePage: React.FC<TitlePageProps> = ({ title }) => {
 };
 
 export default TitlePage;
+ */
