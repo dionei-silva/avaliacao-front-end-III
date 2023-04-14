@@ -49,7 +49,7 @@ const Form: React.FC<FormProps> = ({ textBtn, mode }) => {
       <Grid item textAlign="center">
         {mode === 'signin' ? (
           <Typography variant="body1" mt={3}>
-            <Link to="/signup">Don't have an account? Register now</Link>
+            <Link to="/signup">Dont have an account? Register now</Link>
           </Typography>
         ) : (
           <Typography variant="body1" mt={3}>
