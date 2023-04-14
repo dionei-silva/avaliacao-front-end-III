@@ -1,6 +1,6 @@
 import { Container, Grid } from '@mui/material';
 import React from 'react';
-import ResponsiveAppBar from '../../components/ResponsiveAppBar';
+import ResponsiveAppBar from '../../Components/ResponsiveAppBar';
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
